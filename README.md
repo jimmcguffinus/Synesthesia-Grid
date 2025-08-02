@@ -56,12 +56,96 @@ A 3D grid where:
 - **Styling**: Inline CSS with color-coded intensity visualization
 - **Dependencies**: elm/browser, elm/core, elm/html, elm/json
 
+## Development Setup (20-Minute Process)
+
+### Prerequisites
+- **Node.js** installed on your system
+- **Git** for version control
+- **Text editor** (VS Code recommended)
+
+### Step-by-Step Setup
+
+#### 1. Environment Setup (5 minutes)
+```bash
+# Install Elm compiler globally
+npm install -g @elm/compiler
+
+# Verify installation
+elm --version
+```
+
+#### 2. Project Initialization (3 minutes)
+```bash
+# Clone or create project directory
+git init
+# Add elm.json dependencies
+```
+
+#### 3. Code Development (5 minutes)
+- **Fix import conflicts** (Html.Attributes vs Basics)
+- **Add interactive features** (cell editing, add/remove rows/columns)
+- **Implement color coding** (intensity visualization)
+- **Add user feedback** (success/error messages)
+
+#### 4. Compilation & Testing (4 minutes)
+```bash
+# Compile Elm to JavaScript
+npx elm make src/Main.elm --output=index.html
+
+# Test in browser
+start index.html
+```
+
+#### 5. Documentation & Deployment (3 minutes)
+- **Update README** with setup instructions
+- **Create demo guide** with examples
+- **Push to GitHub** with proper documentation
+
+### Common Issues & Solutions
+
+#### Elm Not Found
+```bash
+# If 'elm' command not found
+npm install -g @elm/compiler
+# Or use npx
+npx elm make src/Main.elm --output=index.html
+```
+
+#### Import Conflicts
+```bash
+# Fix ambiguous imports by using qualified names
+import Html.Attributes as Attr
+# Then use Attr.style, Attr.value, etc.
+```
+
+#### Compilation Errors
+```bash
+# Elm provides detailed error messages
+# Common fixes:
+# - Add missing dependencies to elm.json
+# - Fix import conflicts
+# - Resolve type mismatches
+```
+
 ## Running the Application
 
-1. Make sure you have Node.js installed
-2. Install Elm: `npm install -g @elm/compiler`
-3. Compile: `npx elm make src/Main.elm --output=index.html`
-4. Open `index.html` in your browser
+### Quick Start (Live Version)
+**Visit:** [https://jimmcguffinus.github.io/Synesthesia-Grid/](https://jimmcguffinus.github.io/Synesthesia-Grid/)
+
+### Local Development
+1. **Install Node.js** (if not already installed)
+2. **Install Elm**: `npm install -g @elm/compiler`
+3. **Compile**: `npx elm make src/Main.elm --output=index.html`
+4. **Open**: `index.html` in your browser
+
+### Development Time Breakdown
+- **Setup & Installation**: 5 minutes
+- **Code Development**: 5 minutes  
+- **Testing & Debugging**: 4 minutes
+- **Documentation**: 3 minutes
+- **Deployment**: 3 minutes
+
+**Total: 20 minutes** from concept to live application
 
 ## Future Enhancements
 

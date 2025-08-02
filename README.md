@@ -2,6 +2,18 @@
 
 A fully functional interactive grid for synesthesia-type associations between various concepts and sensory descriptors.
 
+## 🙏 Credits
+
+**Original Project:** [Kaden Taylor](https://github.com/kadenjtaylor) - whose Elm hackathon prototype inspired this AI collaboration challenge.
+
+## 🚀 The Story Behind This Project
+
+This project started as a **quick AI collaboration challenge** - taking a friend's Elm hackathon prototype and turning it into a fully functional web application in just **20 minutes** using AI assistance.
+
+**The Challenge:** Transform a static synesthesia data collection tool into an interactive, user-friendly application with real-time editing, dynamic grid management, and professional documentation.
+
+**The Result:** A complete, working application that demonstrates the power of human creativity + AI assistance for rapid prototyping and problem-solving.
+
 ## Features
 
 ✅ **Interactive Cell Editing**: Click any cell to edit intensity values (0-9)
@@ -66,3 +78,13 @@ Originally a hackathon project idea, this tool serves multiple purposes:
 - **AI Training**: Helping robots write better metaphors
 - **Research**: Studying cross-modal associations in human cognition
 - **Education**: Teaching about synesthesia and sensory associations
+
+## The AI Collaboration Experience
+
+This project demonstrates how AI can accelerate development:
+- **20-minute transformation** from prototype to production-ready app
+- **Rapid problem-solving** with technical challenges
+- **Immediate documentation** and user guides
+- **Professional polish** with proper error handling and UX
+
+The result is a testament to the power of human creativity combined with AI assistance for rapid prototyping and development.

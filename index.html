@@ -4464,6 +4464,7 @@ var $elm$core$Set$toList = function (_v0) {
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
+var $elm$core$Maybe$Nothing = {$: 'Nothing'};
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$List$foldl = F3(
@@ -4615,11 +4616,24 @@ var $author$project$Main$initialModel = {
 				$elm$core$Dict$fromList(
 					_List_fromArray(
 						[
-							_Utils_Tuple2('spicy', 5)
+							_Utils_Tuple2('spicy', 5),
+							_Utils_Tuple2('bright', 8)
+						]))),
+				_Utils_Tuple2(
+				'coffee',
+				$elm$core$Dict$fromList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('bitter', 7),
+							_Utils_Tuple2('spicy', 3)
 						])))
 			])),
 	column_names: _List_fromArray(
 		['bright', 'loud', 'spicy', 'crunchy', 'shrill', 'rough', 'smooth', 'shiny', 'bitter']),
+	editing: $elm$core$Maybe$Nothing,
+	message: '',
+	newColumnName: '',
+	newRowName: '',
 	row_names: _List_fromArray(
 		['the sun', 'the moon', 'truth', 'friendship', 'intelligence', 'coffee', 'love', 'sex', 'sleep', 'justice', 'thinking'])
 };
@@ -4649,7 +4663,6 @@ var $elm$core$Basics$add = _Basics_add;
 var $elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
-var $elm$core$Maybe$Nothing = {$: 'Nothing'};
 var $elm$core$String$all = _String_all;
 var $elm$core$Basics$and = _Basics_and;
 var $elm$core$Basics$append = _Utils_append;
@@ -5334,6 +5347,37 @@ var $elm$browser$Browser$sandbox = function (impl) {
 			view: impl.view
 		});
 };
+var $author$project$Main$AddColumn = {$: 'AddColumn'};
+var $author$project$Main$AddRow = {$: 'AddRow'};
+var $author$project$Main$UpdateNewColumnName = function (a) {
+	return {$: 'UpdateNewColumnName', a: a};
+};
+var $author$project$Main$UpdateNewRowName = function (a) {
+	return {$: 'UpdateNewRowName', a: a};
+};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $author$project$Main$DeleteColumn = function (a) {
+	return {$: 'DeleteColumn', a: a};
+};
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -5348,7 +5392,7 @@ var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$th = _VirtualDom_node('th');
-var $author$project$Main$columnNames = function (column_names) {
+var $author$project$Main$columnNames = function (model) {
 	return A2(
 		$elm$core$List$map,
 		function (name) {
@@ -5361,10 +5405,28 @@ var $author$project$Main$columnNames = function (column_names) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text(name)
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(name)
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$DeleteColumn(name)),
+								A2($elm$html$Html$Attributes$style, 'font-size', '10px')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('×')
+							]))
 					]));
 		},
-		column_names);
+		model.column_names);
 };
 var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $author$project$Main$headers = function (model) {
@@ -5373,10 +5435,72 @@ var $author$project$Main$headers = function (model) {
 			A2(
 			$elm$html$Html$tr,
 			_List_Nil,
-			$author$project$Main$columnNames(
-				A2($elm$core$List$cons, ' ', model.column_names)))
+			A2(
+				$elm$core$List$cons,
+				A2(
+					$elm$html$Html$th,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'border', '1px solid black')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(' ')
+						])),
+				$author$project$Main$columnNames(model)))
 		]);
 };
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $author$project$Main$DeleteRow = function (a) {
+	return {$: 'DeleteRow', a: a};
+};
+var $author$project$Main$EditCell = F2(
+	function (a, b) {
+		return {$: 'EditCell', a: a, b: b};
+	});
+var $author$project$Main$SaveCell = F2(
+	function (a, b) {
+		return {$: 'SaveCell', a: a, b: b};
+	});
+var $author$project$Main$UpdateCell = F3(
+	function (a, b, c) {
+		return {$: 'UpdateCell', a: a, b: b, c: c};
+	});
 var $elm$core$Dict$get = F2(
 	function (targetKey, dict) {
 		get:
@@ -5422,6 +5546,8 @@ var $author$project$Main$intensityToColor = function (i) {
 			return '#FFC500';
 		case 5:
 			return '#EEE600';
+		case 6:
+			return '#D5E600';
 		case 7:
 			return '#CFE600';
 		case 8:
@@ -5429,21 +5555,47 @@ var $author$project$Main$intensityToColor = function (i) {
 		case 9:
 			return '#5EE600';
 		default:
-			var _default = i;
 			return 'grey';
 	}
 };
+var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
+var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
+var $elm$html$Html$Events$onBlur = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'blur',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $author$project$Main$onEnter = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'keydown',
+		A2(
+			$elm$json$Json$Decode$andThen,
+			function (key) {
+				return (key === 'Enter') ? $elm$json$Json$Decode$succeed(msg) : $elm$json$Json$Decode$fail('Not Enter');
+			},
+			A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string)));
+};
 var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$core$Debug$toString = _Debug_toString;
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Main$formatCell = F3(
-	function (sheet, row, col) {
-		var _v0 = A2($elm$core$Dict$get, row, sheet);
+	function (model, row, col) {
+		var isEditing = _Utils_eq(
+			model.editing,
+			$elm$core$Maybe$Just(
+				_Utils_Tuple2(row, col)));
+		var _v0 = A2($elm$core$Dict$get, row, model.cells);
 		if (_v0.$ === 'Just') {
 			var c = _v0.a;
 			var _v1 = A2($elm$core$Dict$get, col, c);
 			if (_v1.$ === 'Just') {
 				var cellContent = _v1.a;
-				return A2(
+				return isEditing ? A2(
 					$elm$html$Html$td,
 					_List_fromArray(
 						[
@@ -5455,11 +5607,45 @@ var $author$project$Main$formatCell = F3(
 						]),
 					_List_fromArray(
 						[
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$min('0'),
+									$elm$html$Html$Attributes$max('9'),
+									$elm$html$Html$Attributes$value(
+									$elm$core$Debug$toString(cellContent)),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Main$UpdateCell, row, col)),
+									$elm$html$Html$Events$onBlur(
+									A2($author$project$Main$SaveCell, row, col)),
+									$author$project$Main$onEnter(
+									A2($author$project$Main$SaveCell, row, col)),
+									A2($elm$html$Html$Attributes$style, 'width', '40px'),
+									A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+								]),
+							_List_Nil)
+						])) : A2(
+					$elm$html$Html$td,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'border', '1px solid black'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'background',
+							$author$project$Main$intensityToColor(cellContent)),
+							$elm$html$Html$Events$onClick(
+							A2($author$project$Main$EditCell, row, col)),
+							A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
+						]),
+					_List_fromArray(
+						[
 							$elm$html$Html$text(
 							$elm$core$Debug$toString(cellContent))
 						]));
 			} else {
-				return A2(
+				return isEditing ? A2(
 					$elm$html$Html$td,
 					_List_fromArray(
 						[
@@ -5468,16 +5654,76 @@ var $author$project$Main$formatCell = F3(
 						]),
 					_List_fromArray(
 						[
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$min('0'),
+									$elm$html$Html$Attributes$max('9'),
+									$elm$html$Html$Attributes$value('0'),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Main$UpdateCell, row, col)),
+									$elm$html$Html$Events$onBlur(
+									A2($author$project$Main$SaveCell, row, col)),
+									$author$project$Main$onEnter(
+									A2($author$project$Main$SaveCell, row, col)),
+									A2($elm$html$Html$Attributes$style, 'width', '40px'),
+									A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+								]),
+							_List_Nil)
+						])) : A2(
+					$elm$html$Html$td,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'border', '1px solid black'),
+							A2($elm$html$Html$Attributes$style, 'background', ''),
+							$elm$html$Html$Events$onClick(
+							A2($author$project$Main$EditCell, row, col)),
+							A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
+						]),
+					_List_fromArray(
+						[
 							$elm$html$Html$text(' ')
 						]));
 			}
 		} else {
-			return A2(
+			return isEditing ? A2(
 				$elm$html$Html$td,
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'border', '1px solid black'),
 						A2($elm$html$Html$Attributes$style, 'background', '')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$type_('number'),
+								$elm$html$Html$Attributes$min('0'),
+								$elm$html$Html$Attributes$max('9'),
+								$elm$html$Html$Attributes$value('0'),
+								$elm$html$Html$Events$onInput(
+								A2($author$project$Main$UpdateCell, row, col)),
+								$elm$html$Html$Events$onBlur(
+								A2($author$project$Main$SaveCell, row, col)),
+								$author$project$Main$onEnter(
+								A2($author$project$Main$SaveCell, row, col)),
+								A2($elm$html$Html$Attributes$style, 'width', '40px'),
+								A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+							]),
+						_List_Nil)
+					])) : A2(
+				$elm$html$Html$td,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'border', '1px solid black'),
+						A2($elm$html$Html$Attributes$style, 'background', ''),
+						$elm$html$Html$Events$onClick(
+						A2($author$project$Main$EditCell, row, col)),
+						A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
 					]),
 				_List_fromArray(
 					[
@@ -5503,12 +5749,30 @@ var $author$project$Main$rows = function (model) {
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text(r)
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(r)
+									])),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick(
+										$author$project$Main$DeleteRow(r)),
+										A2($elm$html$Html$Attributes$style, 'font-size', '10px')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('×')
+									]))
 							])),
 					A2(
 						$elm$core$List$map,
 						function (c) {
-							return A3($author$project$Main$formatCell, model.cells, r, c);
+							return A3($author$project$Main$formatCell, model, r, c);
 						},
 						model.column_names)));
 		},
@@ -5517,15 +5781,694 @@ var $author$project$Main$rows = function (model) {
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $author$project$Main$tableView = function (model) {
 	return A2(
-		$elm$html$Html$table,
+		$elm$html$Html$div,
 		_List_Nil,
-		_Utils_ap(
-			$author$project$Main$headers(model),
-			$author$project$Main$rows(model)));
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Synesthesia Grid')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-bottom', '20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$label,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('New Row: ')
+									])),
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$value(model.newRowName),
+										$elm$html$Html$Events$onInput($author$project$Main$UpdateNewRowName),
+										$elm$html$Html$Attributes$placeholder('Enter row name')
+									]),
+								_List_Nil),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$Main$AddRow)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Add Row')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'margin-top', '10px')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$label,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('New Column: ')
+									])),
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$value(model.newColumnName),
+										$elm$html$Html$Events$onInput($author$project$Main$UpdateNewColumnName),
+										$elm$html$Html$Attributes$placeholder('Enter column name')
+									]),
+								_List_Nil),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$Main$AddColumn)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Add Column')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'margin-top', '10px'),
+								A2($elm$html$Html$Attributes$style, 'color', 'green')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(model.message)
+							]))
+					])),
+				A2(
+				$elm$html$Html$table,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'border-collapse', 'collapse'),
+						A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
+					]),
+				_Utils_ap(
+					$author$project$Main$headers(model),
+					$author$project$Main$rows(model))),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '20px'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '12px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Click any cell to edit. Use 0-9 for intensity values.')
+					]))
+			]));
 };
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$Dict$map = F2(
+	function (func, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		} else {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				key,
+				A2(func, key, value),
+				A2($elm$core$Dict$map, func, left),
+				A2($elm$core$Dict$map, func, right));
+		}
+	});
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$Basics$not = _Basics_not;
+var $elm$core$Dict$getMin = function (dict) {
+	getMin:
+	while (true) {
+		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+			var left = dict.d;
+			var $temp$dict = left;
+			dict = $temp$dict;
+			continue getMin;
+		} else {
+			return dict;
+		}
+	}
+};
+var $elm$core$Dict$moveRedLeft = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var lLeft = _v1.d;
+			var lRight = _v1.e;
+			var _v2 = dict.e;
+			var rClr = _v2.a;
+			var rK = _v2.b;
+			var rV = _v2.c;
+			var rLeft = _v2.d;
+			var _v3 = rLeft.a;
+			var rlK = rLeft.b;
+			var rlV = rLeft.c;
+			var rlL = rLeft.d;
+			var rlR = rLeft.e;
+			var rRight = _v2.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				rlK,
+				rlV,
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					rlL),
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v4 = dict.d;
+			var lClr = _v4.a;
+			var lK = _v4.b;
+			var lV = _v4.c;
+			var lLeft = _v4.d;
+			var lRight = _v4.e;
+			var _v5 = dict.e;
+			var rClr = _v5.a;
+			var rK = _v5.b;
+			var rV = _v5.c;
+			var rLeft = _v5.d;
+			var rRight = _v5.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$moveRedRight = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var _v2 = _v1.d;
+			var _v3 = _v2.a;
+			var llK = _v2.b;
+			var llV = _v2.c;
+			var llLeft = _v2.d;
+			var llRight = _v2.e;
+			var lRight = _v1.e;
+			var _v4 = dict.e;
+			var rClr = _v4.a;
+			var rK = _v4.b;
+			var rV = _v4.c;
+			var rLeft = _v4.d;
+			var rRight = _v4.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				lK,
+				lV,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					lRight,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v5 = dict.d;
+			var lClr = _v5.a;
+			var lK = _v5.b;
+			var lV = _v5.c;
+			var lLeft = _v5.d;
+			var lRight = _v5.e;
+			var _v6 = dict.e;
+			var rClr = _v6.a;
+			var rK = _v6.b;
+			var rV = _v6.c;
+			var rLeft = _v6.d;
+			var rRight = _v6.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$removeHelpPrepEQGT = F7(
+	function (targetKey, dict, color, key, value, left, right) {
+		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+			var _v1 = left.a;
+			var lK = left.b;
+			var lV = left.c;
+			var lLeft = left.d;
+			var lRight = left.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				lK,
+				lV,
+				lLeft,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
+		} else {
+			_v2$2:
+			while (true) {
+				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
+					if (right.d.$ === 'RBNode_elm_builtin') {
+						if (right.d.a.$ === 'Black') {
+							var _v3 = right.a;
+							var _v4 = right.d;
+							var _v5 = _v4.a;
+							return $elm$core$Dict$moveRedRight(dict);
+						} else {
+							break _v2$2;
+						}
+					} else {
+						var _v6 = right.a;
+						var _v7 = right.d;
+						return $elm$core$Dict$moveRedRight(dict);
+					}
+				} else {
+					break _v2$2;
+				}
+			}
+			return dict;
+		}
+	});
+var $elm$core$Dict$removeMin = function (dict) {
+	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+		var color = dict.a;
+		var key = dict.b;
+		var value = dict.c;
+		var left = dict.d;
+		var lColor = left.a;
+		var lLeft = left.d;
+		var right = dict.e;
+		if (lColor.$ === 'Black') {
+			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+				var _v3 = lLeft.a;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					key,
+					value,
+					$elm$core$Dict$removeMin(left),
+					right);
+			} else {
+				var _v4 = $elm$core$Dict$moveRedLeft(dict);
+				if (_v4.$ === 'RBNode_elm_builtin') {
+					var nColor = _v4.a;
+					var nKey = _v4.b;
+					var nValue = _v4.c;
+					var nLeft = _v4.d;
+					var nRight = _v4.e;
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						$elm$core$Dict$removeMin(nLeft),
+						nRight);
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			}
+		} else {
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				key,
+				value,
+				$elm$core$Dict$removeMin(left),
+				right);
+		}
+	} else {
+		return $elm$core$Dict$RBEmpty_elm_builtin;
+	}
+};
+var $elm$core$Dict$removeHelp = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		} else {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_cmp(targetKey, key) < 0) {
+				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
+					var _v4 = left.a;
+					var lLeft = left.d;
+					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+						var _v6 = lLeft.a;
+						return A5(
+							$elm$core$Dict$RBNode_elm_builtin,
+							color,
+							key,
+							value,
+							A2($elm$core$Dict$removeHelp, targetKey, left),
+							right);
+					} else {
+						var _v7 = $elm$core$Dict$moveRedLeft(dict);
+						if (_v7.$ === 'RBNode_elm_builtin') {
+							var nColor = _v7.a;
+							var nKey = _v7.b;
+							var nValue = _v7.c;
+							var nLeft = _v7.d;
+							var nRight = _v7.e;
+							return A5(
+								$elm$core$Dict$balance,
+								nColor,
+								nKey,
+								nValue,
+								A2($elm$core$Dict$removeHelp, targetKey, nLeft),
+								nRight);
+						} else {
+							return $elm$core$Dict$RBEmpty_elm_builtin;
+						}
+					}
+				} else {
+					return A5(
+						$elm$core$Dict$RBNode_elm_builtin,
+						color,
+						key,
+						value,
+						A2($elm$core$Dict$removeHelp, targetKey, left),
+						right);
+				}
+			} else {
+				return A2(
+					$elm$core$Dict$removeHelpEQGT,
+					targetKey,
+					A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
+			}
+		}
+	});
+var $elm$core$Dict$removeHelpEQGT = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBNode_elm_builtin') {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_eq(targetKey, key)) {
+				var _v1 = $elm$core$Dict$getMin(right);
+				if (_v1.$ === 'RBNode_elm_builtin') {
+					var minKey = _v1.b;
+					var minValue = _v1.c;
+					return A5(
+						$elm$core$Dict$balance,
+						color,
+						minKey,
+						minValue,
+						left,
+						$elm$core$Dict$removeMin(right));
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			} else {
+				return A5(
+					$elm$core$Dict$balance,
+					color,
+					key,
+					value,
+					left,
+					A2($elm$core$Dict$removeHelp, targetKey, right));
+			}
+		} else {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		}
+	});
+var $elm$core$Dict$remove = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Dict$update = F3(
+	function (targetKey, alter, dictionary) {
+		var _v0 = alter(
+			A2($elm$core$Dict$get, targetKey, dictionary));
+		if (_v0.$ === 'Just') {
+			var value = _v0.a;
+			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
+		} else {
+			return A2($elm$core$Dict$remove, targetKey, dictionary);
+		}
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		return model;
+		switch (msg.$) {
+			case 'EditCell':
+				var row = msg.a;
+				var col = msg.b;
+				return _Utils_update(
+					model,
+					{
+						editing: $elm$core$Maybe$Just(
+							_Utils_Tuple2(row, col))
+					});
+			case 'UpdateCell':
+				var row = msg.a;
+				var col = msg.b;
+				var value = msg.c;
+				var intValue = A2(
+					$elm$core$Maybe$withDefault,
+					0,
+					$elm$core$String$toInt(value));
+				return _Utils_update(
+					model,
+					{
+						cells: A3(
+							$elm$core$Dict$update,
+							row,
+							function (maybeRowDict) {
+								if (maybeRowDict.$ === 'Just') {
+									var rowDict = maybeRowDict.a;
+									return $elm$core$Maybe$Just(
+										A3($elm$core$Dict$insert, col, intValue, rowDict));
+								} else {
+									return $elm$core$Maybe$Just(
+										$elm$core$Dict$fromList(
+											_List_fromArray(
+												[
+													_Utils_Tuple2(col, intValue)
+												])));
+								}
+							},
+							model.cells)
+					});
+			case 'SaveCell':
+				var row = msg.a;
+				var col = msg.b;
+				return _Utils_update(
+					model,
+					{editing: $elm$core$Maybe$Nothing});
+			case 'CancelEdit':
+				return _Utils_update(
+					model,
+					{editing: $elm$core$Maybe$Nothing});
+			case 'AddRow':
+				return (($elm$core$String$length(model.newRowName) > 0) && (!A2($elm$core$List$member, model.newRowName, model.row_names))) ? _Utils_update(
+					model,
+					{
+						message: 'Row added successfully!',
+						newRowName: '',
+						row_names: _Utils_ap(
+							model.row_names,
+							_List_fromArray(
+								[model.newRowName]))
+					}) : _Utils_update(
+					model,
+					{message: 'Please enter a valid row name!'});
+			case 'AddColumn':
+				return (($elm$core$String$length(model.newColumnName) > 0) && (!A2($elm$core$List$member, model.newColumnName, model.column_names))) ? _Utils_update(
+					model,
+					{
+						column_names: _Utils_ap(
+							model.column_names,
+							_List_fromArray(
+								[model.newColumnName])),
+						message: 'Column added successfully!',
+						newColumnName: ''
+					}) : _Utils_update(
+					model,
+					{message: 'Please enter a valid column name!'});
+			case 'UpdateNewRowName':
+				var name = msg.a;
+				return _Utils_update(
+					model,
+					{newRowName: name});
+			case 'UpdateNewColumnName':
+				var name = msg.a;
+				return _Utils_update(
+					model,
+					{newColumnName: name});
+			case 'DeleteRow':
+				var row = msg.a;
+				return _Utils_update(
+					model,
+					{
+						cells: A2($elm$core$Dict$remove, row, model.cells),
+						message: 'Row deleted!',
+						row_names: A2(
+							$elm$core$List$filter,
+							function (r) {
+								return !_Utils_eq(r, row);
+							},
+							model.row_names)
+					});
+			default:
+				var col = msg.a;
+				return _Utils_update(
+					model,
+					{
+						cells: A2(
+							$elm$core$Dict$map,
+							F2(
+								function (_v2, rowDict) {
+									return A2($elm$core$Dict$remove, col, rowDict);
+								}),
+							model.cells),
+						column_names: A2(
+							$elm$core$List$filter,
+							function (c) {
+								return !_Utils_eq(c, col);
+							},
+							model.column_names),
+						message: 'Column deleted!'
+					});
+		}
 	});
 var $author$project$Main$main = $elm$browser$Browser$sandbox(
 	{init: $author$project$Main$initialModel, update: $author$project$Main$update, view: $author$project$Main$tableView});
